@@ -24,7 +24,8 @@ export function ratioScore(s: Pick<Suggestion, 'type' | 'ratio' | 'shownValue'>)
       if (r >= 1 && r <= 100) return 1;
       if (r >= 0.5 && r <= 1000) return 0.8;
       if (r <= 1e5) return 0.5; // „≈ 12 000 nových Škod Fabia“ je pořád dobře uchopitelné
-      return 0.1;
+      if (r <= 1e8) return 0.35; // „≈ 380 mil. lahvových piv“ – živé, ale méně přesné v představě
+      return 0.15;
     case 'share': {
       const p = r * 100;
       if (p >= 1 && p <= 50) return 1;
@@ -39,7 +40,13 @@ export function ratioScore(s: Pick<Suggestion, 'type' | 'ratio' | 'shownValue'>)
       return 0.2;
     }
     case 'per_capita':
-      return 0.8;
+      // samotné „Kč na obyvatele“ 0,8; řetězené „… – to je ≈ 35 piv na hlavu“ podle počtu věcí
+      return s.ratio === 1 ? 0.8 : s.ratio <= 100 ? 0.95 : 0.6;
+    case 'conversion':
+      // samotný přepočet („za ≈ 450 000 km jízdy“) je vždy srozumitelný;
+      // řetězený přepočet se hodnotí jako násobek a o kousek níž (dva koeficienty za sebou)
+      if (s.ratio === 1) return 0.85;
+      return 0.9 * ratioScore({ ...s, type: 'multiple' });
     case 'locality':
       // poměr k nejbližší lokalitě: 1,00 → 1; ±15 % → 0,5
       return 1 - Math.min(1, Math.abs(Math.log(r)) / Math.log(1.15)) * 0.5;
@@ -99,6 +106,8 @@ export interface SelectOptions {
   pageSize?: number;
   /** Nejvýš kolik návrhů jednoho typu na stránce. */
   perType?: number;
+  /** Nejvýš kolik návrhů jedné kategorie na stránce (pestrost; při filtru kategorie se neuplatní). */
+  perCategory?: number;
   currentYear: number;
 }
 
@@ -106,6 +115,7 @@ export interface SelectOptions {
 export function rankPages(all: Suggestion[], opts: SelectOptions): Ranked[][] {
   const pageSize = opts.pageSize ?? 8;
   const perType = opts.perType ?? 2;
+  const perCategory = opts.categories?.length ? Infinity : opts.perCategory ?? 3;
   const minUseful = 0.35; // pod tím je návrh spíš na škodu
   let pool: Ranked[] = all
     .filter((s) => !opts.categories?.length || opts.categories.includes(s.category))
@@ -116,7 +126,9 @@ export function rankPages(all: Suggestion[], opts: SelectOptions): Ranked[][] {
   // stejná reference jen jednou (nejlépe hodnocený typ vyhrává)
   const seenRef = new Set<string>();
   pool = pool.filter((s) => {
-    const key = s.refs[s.refs.length - 1].id + (s.type === 'per_capita' ? ':pc' : '');
+    // přepočet přes stejný koeficient jen jednou (nejlepší varianta), jinak stejná reference jen jednou
+    const key =
+      s.type === 'conversion' ? `conv:${s.refs[0].id}` : s.refs[s.refs.length - 1].id + (s.type === 'per_capita' ? ':pc' : '');
     if (seenRef.has(key)) return false;
     seenRef.add(key);
     return true;
@@ -126,12 +138,29 @@ export function rankPages(all: Suggestion[], opts: SelectOptions): Ranked[][] {
   while (pool.length) {
     const page: Ranked[] = [];
     const count: Partial<Record<SuggestionType, number>> = {};
-    for (const s of pool) {
-      if (page.length >= pageSize) break;
-      if ((count[s.type] ?? 0) >= perType) continue;
-      page.push(s);
-      count[s.type] = (count[s.type] ?? 0) + 1;
+    const catCount: Partial<Record<Category, number>> = {};
+    const groups = new Set<string>();
+    // 1. průchod s limitem na kategorii; 2. průchod bez něj, když by stránka měla méně než 5 návrhů
+    for (const catLimit of [perCategory, Infinity]) {
+      for (const s of pool) {
+        if (page.length >= (catLimit === Infinity ? Math.min(5, pageSize) : pageSize)) break;
+        if (page.includes(s)) continue;
+        if ((count[s.type] ?? 0) >= perType) continue;
+        if ((catCount[s.category] ?? 0) >= catLimit) continue;
+        // pestrost: z jedné skupiny dat (HDP států, ceny potravin …) nejvýš jeden návrh na stránku
+        const sGroups = s.refs.map((r) => r.group).filter((g): g is string => !!g);
+        if (sGroups.some((g) => groups.has(g))) continue;
+        // u řetězených návrhů nejvýš jeden na stránku od stejného výchozího koeficientu / jmenovatele
+        const anchor = s.type === 'conversion' || s.type === 'per_capita' ? `anchor:${s.refs[0].id}` : null;
+        if (anchor && groups.has(anchor)) continue;
+        sGroups.forEach((g) => groups.add(g));
+        if (anchor) groups.add(anchor);
+        page.push(s);
+        count[s.type] = (count[s.type] ?? 0) + 1;
+        catCount[s.category] = (catCount[s.category] ?? 0) + 1;
+      }
     }
+    page.sort((x, y) => y.score.total - x.score.total);
     pages.push(page);
     pool = pool.filter((s) => !page.includes(s));
   }

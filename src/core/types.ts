@@ -23,6 +23,9 @@ export type Dimension =
 /** `year` = roční tok (Kč/rok, MWh/rok); `null` = stav nebo jednorázové množství. */
 export type Per = 'year' | null;
 
+/** Tok tak, jak ho uvádí zdroj; při načtení se převede na „za rok“ (viz PER_FACTORS v units.ts). */
+export type DataPer = 'year' | 'month' | 'day' | 'second' | null;
+
 export interface Quantity {
   /** Hodnota v základní jednotce dimenze. */
   value: number;
@@ -60,8 +63,12 @@ export interface RefItem {
   value: number;
   unit: string;
   dimension: Dimension;
-  per: Per;
-  kind: 'unit' | 'aggregate';
+  per: DataPer;
+  /**
+   * unit = věc k násobení, aggregate = celek pro podíl,
+   * rate = přepočtový koeficient: `value unit` připadá na `rate_value rate_unit`.
+   */
+  kind: 'unit' | 'aggregate' | 'rate';
   basis: string;
   category: Category;
   source_name: string;
@@ -72,19 +79,31 @@ export interface RefItem {
   note: string;
   familiarity: 1 | 2 | 3;
   evidence?: string;
+  /** Skupina podobných položek (např. HDP států, ceny potravin) – na stránce se ukáže nejvýš jedna. */
+  group?: string;
   /** Zvláštní role položky (jmenovatel „na obyvatele“, lokalita apod.). */
   tags?: string[];
-  /** Územní úroveň u lokalit. */
-  level?: 'stat' | 'kraj' | 'obec';
+  /** Územní úroveň u lokalit (zeme = jiný stát Evropy). */
+  level?: 'stat' | 'kraj' | 'obec' | 'zeme';
   /** Název lokality v 1. pádě (pro věty „tolik obyvatel má X“). */
   place?: string;
   /** Definice domácnosti (ČSÚ rozlišuje hospodařící, cenzové …). */
   household_definition?: string;
   /** Věta pro časový ekvivalent; {t} se nahradí dobou, např. „Temelín by to vyrobil za {t}“. */
   time_phrase?: string;
+  /** Jen u kind = rate: jmenovatel koeficientu (např. 100 km). */
+  rate_value?: number;
+  rate_unit?: string;
+  rate_dimension?: Dimension;
+  /** Věta pro přepočet dimension → rate_dimension; {n} = převedené množství. */
+  rate_phrase?: string;
+  /** Věta pro opačný směr; {n} = množství v `unit`. */
+  reverse_phrase?: string;
 }
 
 /** Položka po načtení: hodnota převedená na základní jednotky. */
 export interface Ref extends RefItem {
   q: Quantity;
+  /** Jen u kind = rate: jmenovatel v základních jednotkách. */
+  rq?: Quantity;
 }

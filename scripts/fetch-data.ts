@@ -8,6 +8,7 @@
 import type { RefItem } from '../src/core/types';
 import { getJson, sameForms, sparql, streamCsv, TODAY, writeDataset, writeJson } from './lib';
 import { plantForms } from './plant-forms';
+import { fetchCountries, fetchCsuExtra } from './sources-extra';
 
 type Item = RefItem;
 
@@ -500,36 +501,7 @@ async function fetchEurostat() {
     time_phrase: 'Česko vypustí tolik skleníkových plynů za {t}',
   });
 
-  try {
-    const pc = await eurostatLatest('env_air_gge', 'airpol=GHG&src_crf=TOTX4_MEMO&unit=T_HAB');
-    items.push({
-      ...common,
-      kind: 'unit',
-      id: 'eurostat-emise-na-obyvatele',
-      label: `roční emise skleníkových plynů na obyvatele ČR (${pc.year})`,
-      prefix: 'roční emise skleníkových plynů',
-      forms: {
-        one: 'průměrného obyvatele ČR',
-        few: 'průměrných obyvatel ČR',
-        many: 'průměrných obyvatel ČR',
-        dec: 'průměrného obyvatele ČR',
-        gen: 'ročních emisí průměrného obyvatele ČR',
-      },
-      value: pc.value,
-      unit: 't CO2e',
-      dimension: 'co2e',
-      basis: `emise bez LULUCF na obyvatele, ${pc.year}`,
-      category: 'energetika',
-      source_name: 'Eurostat – Greenhouse gas emissions by source sector (env_air_gge)',
-      source_url: 'https://ec.europa.eu/eurostat/databrowser/view/env_air_gge/default/table',
-      source_id: 'env_air_gge; airpol=GHG; src_crf=TOTX4_MEMO; unit=T_HAB; geo=CZ',
-      year: pc.year,
-      note: 'Tuny CO2e na obyvatele a rok, jak je publikuje Eurostat.',
-      familiarity: 2,
-    } as Item);
-  } catch (e) {
-    console.warn('  – emise na obyvatele: nedostupné', (e as Error).message);
-  }
+  // Pozn.: emise na obyvatele (unit=T_HAB) Eurostat pro ČR v env_air_gge neposkytuje.
 
   writeDataset('eurostat', {
     dataset: 'Eurostat – spotřeba elektřiny domácností, emise skleníkových plynů',
@@ -579,28 +551,28 @@ async function fetchWages() {
     retrieved_at: TODAY,
     items: [
       {
+        // přepočtový koeficient: peníze ↔ doba práce průměrného zaměstnance
         id: 'prumerna-hruba-mzda',
         label: `průměrná hrubá měsíční mzda (${year})`,
-        forms: {
-          one: 'průměrná hrubá měsíční mzda',
-          few: 'průměrné hrubé měsíční mzdy',
-          many: 'průměrných hrubých měsíčních mezd',
-          dec: 'průměrné hrubé měsíční mzdy',
-          gen: 'průměrné hrubé měsíční mzdy',
-        },
+        forms: { one: '-', few: '-', many: '-', dec: '-', gen: '-' },
         value: Math.round(byYear.get(year)!),
         unit: 'Kč',
         dimension: 'money',
         per: null,
-        kind: 'unit',
-        basis: `průměr za rok ${year}, na přepočtené počty zaměstnanců`,
+        kind: 'rate',
+        rate_value: 1,
+        rate_unit: 'měsíc',
+        rate_dimension: 'time',
+        rate_phrase: `průměrný zaměstnanec si tolik (hrubého) vydělá za {n} (mzda ${year})`,
+        reverse_phrase: `průměrná hrubá mzda za takovou dobu (kalendářně) činí {n} (mzda ${year})`,
+        basis: `průměrná hrubá měsíční mzda ${year}, na přepočtené počty zaměstnanců`,
         category: 'verejne-finance',
         source_name: 'ČSÚ – Průměrná hrubá měsíční mzda (DataStat MZDR)',
         source_url: 'https://data.csu.gov.cz/datastat/info/SADA/MZDR',
         source_id: 'MZDR; ukazatel 5958P; CZ-NACE A-S; ČR',
         year,
         retrieved_at: TODAY,
-        note: 'Měsíční částka; zaokrouhleno na celé koruny.',
+        note: 'Měsíční částka; zaokrouhleno na celé koruny. Hrubá mzda, ne čistá.',
         familiarity: 3,
       },
     ],
@@ -656,6 +628,8 @@ async function main() {
   await run('ČSÚ: CPI', fetchCpi);
   await run('ČSÚ: mzdy', fetchWages);
   await run('ČNB: kurzy', fetchRates);
+  await run('ČSÚ: ceny, narození, úmrtí, byty, odpady', fetchCsuExtra);
+  await run('Eurostat: evropské státy', fetchCountries);
   if (failures.length) {
     console.error(`\nSelhalo: ${failures.join(', ')}`);
     process.exitCode = 1;

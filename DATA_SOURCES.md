@@ -9,11 +9,13 @@ Poslední stažení všech zdrojů: **2. 11. 2026**. U každé položky je datum
 | `csu-obyvatele.json` | ČSÚ, DataStat – [Počet obyvatel podle pohlaví](https://data.csu.gov.cz/datastat/info/SADA/OBY02A) | obyvatelé ČR, 14 krajů a 731 obcí s alespoň 2 000 obyvateli, k 1. 1. 2026 | sada `OBY02A`, ukazatel `2406P`, kód obce; QID z Wikidat | NKOD: neobsahuje autorská díla, databáze není chráněna (odpovídá CC0); doporučeno uvádět zdroj |
 | `csu-domacnosti.json` | ČSÚ, [Sčítání 2021 – Hospodařící domácnosti](https://csu.gov.cz/docs/107508/05638b19-13ea-2ecf-f097-608a80e053eb/sldb2021_domacnosti_clenu_typ.csv) | hospodařící domácnosti: ČR, kraje, stejné obce | ukazatel `2423`, číselník území 97/100/43 | dtto |
 | `csu-byty.json` | ČSÚ, [Sčítání 2021 – Obydlené byty](https://csu.gov.cz/docs/107508/cd4228aa-2957-1e6a-3e30-7b03c3c8deb7/sldb2021_byty_osoby.csv) | obydlené byty: ČR, kraje, obce | ukazatel `2607` | dtto |
-| `csu-mzdy.json` | ČSÚ, DataStat – [MZDR](https://data.csu.gov.cz/datastat/info/SADA/MZDR) | průměrná hrubá měsíční mzda (2025) | `MZDR`, ukazatel `5958P` | dtto |
+| `csu-mzdy.json` | ČSÚ, DataStat – [MZDR](https://data.csu.gov.cz/datastat/info/SADA/MZDR) | průměrná hrubá měsíční mzda (2025) – jako přepočet peníze ↔ doba práce | `MZDR`, ukazatel `5958P` | dtto |
 | `cpi.json` | ČSÚ, DataStat – [CEN0101A](https://data.csu.gov.cz/datastat/info/SADA/CEN0101A) | index spotřebitelských cen, roční průměr, 2015 = 100 (2018–2025) | `CEN0101A`, `IZ2015`, úhrn | dtto |
 | `wikidata-rozloha-obci.json` | [Wikidata](https://www.wikidata.org) (SPARQL) | rozloha 717 obcí, **jen tvrzení s referencí** (většinou „Malý lexikon obcí ČR 2017“, ČSÚ) | QID, vlastnost `P2046`, kód obce `P7606` | CC0 |
 | `wikidata-elektrarny.json` | Wikidata | instalovaný výkon elektráren s referencí **a datem** | QID, `P2109` | CC0 |
 | `eurostat.json` | Eurostat API – [nrg_d_hhq](https://ec.europa.eu/eurostat/databrowser/view/nrg_d_hhq/default/table), [env_air_gge](https://ec.europa.eu/eurostat/databrowser/view/env_air_gge/default/table) | spotřeba elektřiny domácností ČR (2024); emise skleníkových plynů ČR bez LULUCF (2024) | kódy dimenzí v `source_id` | CC BY 4.0 (Eurostat copyright notice) – uvádět zdroj |
+| `csu-ceny-a-toky.json` | ČSÚ, DataStat – [CEN0101N](https://data.csu.gov.cz/datastat/info/SADA/CEN0101N), [CENPHMT](https://data.csu.gov.cz/datastat/info/SADA/CENPHMT), [OBY03C](https://data.csu.gov.cz/datastat/info/SADA/OBY03C), [OBY04A](https://data.csu.gov.cz/datastat/info/SADA/OBY04A), [STA09A](https://data.csu.gov.cz/datastat/info/SADA/STA09A), [ZPR66](https://data.csu.gov.cz/datastat/info/SADA/ZPR66), [SLD040](https://data.csu.gov.cz/datastat/info/SADA/SLD040) | průměrné ceny 22 druhů zboží (pivo, chléb, máslo, vejce…, poslední měsíc), benzín a nafta (poslední týden), živě narození a zemřelí za rok, dokončené byty za rok, komunální odpad za rok, průměrná plocha bytu | kódy sad a reprezentantů v `source_id` | dtto ČSÚ |
+| `eurostat-staty.json` | Eurostat – [tps00001](https://ec.europa.eu/eurostat/databrowser/view/tps00001/default/table), [reg_area3](https://ec.europa.eu/eurostat/databrowser/view/reg_area3/default/table), [nama_10_gdp](https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp/default/table) | obyvatelé, rozloha a HDP evropských států (EU, EFTA, kandidátské země) | `geo` kód v `source_id` | CC BY 4.0 |
 | `rates.json` | [ČNB](https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/) – `api.cnb.cz` | denní kurzy (EUR, USD, GBP, …), 2. 11. 2026 | – | veřejné údaje ČNB, uvádět zdroj |
 
 **Vynecháno záměrně:**
@@ -21,20 +23,38 @@ Poslední stažení všech zdrojů: **2. 11. 2026**. U každé položky je datum
 - Ve Wikidatech má většina elektráren výkon s referencí, ale **bez roku** (chybí kvalifikátor data i datum stažení reference). Podle pravidla „každé číslo má rok“ je skript vynechá, prošla jen 1 elektrárna. Výkony hlavních elektráren jsou proto v kurátorovaných datech z výroční zprávy ČEZ.
 - Ukazatel „emise na obyvatele“ (`env_air_gge`, jednotka `T_HAB`) Eurostat pro ČR neposkytuje.
 
-## Kurátorované (`data/curated.json`, 78 položek)
+## Kurátorované (`data/curated.json`, 211 položek)
 
-Každá položka má přímý odkaz, rok, datum ověření (2. 11. 2026) a doslovný úryvek ze zdroje (`evidence`).
+Každá položka má přímý odkaz, rok, datum ověření (2. 11. 2026) a doslovný úryvek ze zdroje (`evidence`). Položky dohledali a otevřeli pomocní výzkumní agenti. Náhodný vzorek ověřil ručně hlavní běh: 15 položek v první verzi a 6 položek z druhé vlny, všechny odpovídaly zdroji.
 
-| Kategorie | Počet | Hlavní zdroje |
+| Okruh | Příklady | Hlavní zdroje |
 |---|---|---|
-| Energetika | 32 | ERÚ – Roční zpráva o provozu ES ČR 2025; ČEZ – tiskové zprávy a Výroční finanční zpráva 2025; ČSÚ – ENERGO 2021; EU ETS – ověřené emise 2025 (Evropská komise); OTE; Vestas; Škoda Storyboard |
-| Veřejné finance | 21 | Zákon č. 38/2026 Sb. o státním rozpočtu (zakonyprolidi.cz); MF ČR; MPSV; ČSÚ; ŘSD; DPP |
-| Geografie | 14 | ČSÚ; ČÚZK; IPR Praha; Povodí Vltavy; FIFA; World Aquatics; prague.eu; Praha-příroda |
-| Každodenní | 11 | ceníky Škoda Auto; DPP; ČT a ČRo (poplatky); eDálnice; Siemens; Airbus; O2 arena; SK Slavia |
+| Energetika | výroba Temelína a Dukovan, výkony elektráren, ERÚ 2025, emise EU ETS, výhřevnost a emisní faktory paliv, emisní faktor elektřiny | ERÚ, ČEZ (výroční zpráva 2025), MŽP (NIR 2026), MPO, OTE, Evropská komise |
+| Veřejné finance | státní rozpočet 2026 a kapitoly, HDP, dluh, Dukovany II, F-35, Česká televize | zákon č. 38/2026 Sb., MF, MO, MPSV, ČT |
+| Lidé a toky | Letiště Praha, metro a tramvaje, ČD, ZOO Praha, NPÚ, Národní muzeum, hasiči, Sokol, Junák, Sněmovna, Pendolino, O2 arena, MS v hokeji 2024 | provozovatelé, ČSÚ, MV, MZ, IIHF |
+| Délky a hmotnosti | Země–Měsíc, Země–Slunce, Eiffelova věž, Žižkovská věž, Macocha, Hranická propast, Vltava, metro B, maraton, Tour de France, jednokoruna, ISS, zlaté rezervy ČNB | NASA, toureiffel.paris, Správa jeskyní, ČSÚ ročenka, DPP, World Athletics, ČNB |
+| Plochy, objemy, průtoky | Orlík, Slapy, Želivka, průtok Vltavy, Labe, Moravy a Odry, stoletá voda v Praze, národní parky, chmelnice, vinice, lesy, Monako, Bodamské jezero | Povodí Vltavy, ČHMÚ, ČSÚ/AOPK, ČÚZK, IMSEE, IGKB |
+| Každodenní | ceníky Škoda, MHD, poplatky, dálniční známka, spotřeba piva, masa a vody na hlavu, mikrovlnka, rychlovarná konvice, baterie MacBooku a elektrokola | výrobci, DPP, ČSÚ, eDálnice |
+
+**Přepočtové koeficienty** (`kind: "rate"`, 21 položek) propojují veličiny:
+- emise a spotřeba Škody Fabia a Octavia (WLTP), spotřeba Elroqu a Enyaqu;
+- výhřevnost a emisní faktory benzínu, nafty, hnědého uhlí a zemního plynu (MŽP), hustota benzínu;
+- emisní faktor české elektřiny 2025 (MPO);
+- cena elektřiny a plynu pro domácnosti (Eurostat, 1. pololetí 2026);
+- minimální hodinová mzda (MPSV);
+- energie v Horalkách, Pilsner Urquell a Kofole (údaje z obalu na rohlik.cz).
+
+Automaticky se k nim přidává průměrná hrubá mzda (ČSÚ).
 
 Fakta (čísla) nejsou autorským dílem. Z textů zdrojů jsou převzaty jen krátké citace jako doklad.
 
 ### Položky s výhradou (popsáno v poli `note`)
+
+- **Rozsahy hodnot:** WLTP údaje Škody jsou v ceníku uvedené jako rozsah. Uložena je dolní mez a celý rozsah je v poznámce.
+- **Přejmenované jednotky se stejným číslem:** 44,40 TJ/kt = 44,40 GJ/t; 70,10 t CO2/TJ = 70,10 kg CO2/GJ; 34,992 TJ/mil. m³ = 34,992 MJ/m³.
+- **Hodnoty „přes / přibližně“:** u Sokola, dárců krve, Rock for People a nově zapsaných vysokoškoláků je uložené číslo dolní mez nebo zaokrouhlení podle zdroje.
+- **Dárci krve 348 000** = lidé, kteří v roce 2025 skutečně darovali. Evidovaných dárců je přes 430 000.
+- **Uchazeči o zaměstnání a zlaté rezervy ČNB** jsou měsíční nebo čtvrtletní údaje a rychle stárnou.
 
 - **Olympijský bazén – objem a plocha, fotbalové hřiště – plocha:** součin rozměrů, které uvádí zdroj (World Aquatics: minimální rozměry; FIFA: 105 × 68 m).
 - **Televizní poplatek za rok:** 12 × 150 Kč (zákonný měsíční poplatek).
@@ -47,7 +67,7 @@ Fakta (čísla) nejsou autorským dílem. Z textů zdrojů jsou převzaty jen kr
 
 ### Dohledáno, ale vyřazeno (nejednoznačné nebo neověřitelné)
 
-Dukovany – instalovaný výkon (ČEZ uvádí 2 048 i 2 096 MW), Lipno I (139 vs. 120 MW), Počerady uhelná (1 050 vs. 1 000 MW) a paroplynová (844,9 vs. 888 MW), Dětmarovice (odstaveno 2025), Chvaletice (citaci nešlo přesně ověřit), Ledvice a Mělník (zdroj uvádí jen bloky, součet by byl dopočet), Pražský hrad (rozloha se liší podle vymezení), Petřínská rozhledna (58,7 vs. 65,5 m), rozpočet Prahy 2026 (praha.eu nešel otevřít), rozpočet SFDI 2026, počet zaměstnaných (jen v nečitelných PDF), baterie Tesla Model Y (výrobce kapacitu neuvádí).
+Kapacita tramvaje 15T (zdroj uvádí jen 139 + 60), návštěvnost Pražského hradu (rok nebyl v dokumentu uveden), obvod Země (NASA uvádí jen průměr), Petřínská rozhledna a zvon Zikmund (zdroje se liší), Pendolino – délka a hmotnost, délka D1, Central Park (jen v akrech), Lednicko-valtický areál (143 vs. 283 km²), sedadla letadel Smartwings, kapacita Národního divadla, Dukovany – instalovaný výkon (ČEZ uvádí 2 048 i 2 096 MW), Lipno I (139 vs. 120 MW), Počerady uhelná (1 050 vs. 1 000 MW) a paroplynová (844,9 vs. 888 MW), Dětmarovice (odstaveno 2025), Chvaletice (citaci nešlo přesně ověřit), Ledvice a Mělník (zdroj uvádí jen bloky, součet by byl dopočet), Pražský hrad (rozloha se liší podle vymezení), Petřínská rozhledna (58,7 vs. 65,5 m), rozpočet Prahy 2026 (praha.eu nešel otevřít), rozpočet SFDI 2026, počet zaměstnaných (jen v nečitelných PDF), baterie Tesla Model Y (výrobce kapacitu neuvádí).
 
 ## Předvolby „výkon → energie“
 

@@ -5,10 +5,11 @@
  *  per_capita – na osobu / domácnost („≈ 470 Kč na každého obyvatele ČR“)
  *  time       – časový ekvivalent („Temelín by to vyrobil za ≈ 3 dny“)
  *  locality   – ekvivalent lokality („≈ tolik domácností má Olomoucký kraj“)
+ *  conversion – přepočet přes koeficient, i řetězený („Fabia by tolik CO₂ vypustila za ≈ 450 000 km – to je ≈ 11 cest kolem Země“)
  *
  * Funkce jsou čisté: dostanou vstupní veličinu, data a volby, vrátí návrhy.
  */
-import { countPhrase, fmtDuration, fmtExact, fmtPercent, fmtQuantity } from './czech';
+import { approx, countPhrase, fmtDuration, fmtExact, fmtPercent, fmtQuantity } from './czech';
 import type { Category, Dimension, Quantity, Ref } from './types';
 import {
   compatible,
@@ -18,7 +19,7 @@ import {
   type PowerAssumption,
 } from './units';
 
-export type SuggestionType = 'multiple' | 'share' | 'per_capita' | 'time' | 'locality';
+export type SuggestionType = 'multiple' | 'share' | 'per_capita' | 'time' | 'locality' | 'conversion';
 
 export const TYPE_LABELS: Record<SuggestionType, string> = {
   multiple: 'Násobek',
@@ -26,6 +27,7 @@ export const TYPE_LABELS: Record<SuggestionType, string> = {
   per_capita: 'Na osobu / domácnost',
   time: 'Časový ekvivalent',
   locality: 'Ekvivalent lokality',
+  conversion: 'Přepočet',
 };
 
 export interface Suggestion {
@@ -112,7 +114,7 @@ function views(q: Quantity, opts: CompareOptions): View[] {
   return out;
 }
 
-const isLocality = (r: Ref) => r.level === 'obec' || r.level === 'kraj';
+const isLocality = (r: Ref) => r.level === 'obec' || r.level === 'kraj' || r.level === 'zeme';
 
 export function compare(input: Quantity, inputText: string, refs: Ref[], opts: CompareOptions = {}): Suggestion[] {
   const out: Suggestion[] = [];
@@ -129,7 +131,7 @@ export function compare(input: Quantity, inputText: string, refs: Ref[], opts: C
 
     for (const ref of refs) {
       const comp = compatible(q.dim, ref.q.dim);
-      if (!comp.ok || isLocality(ref)) continue;
+      if (!comp.ok || isLocality(ref) || ref.kind === 'rate') continue;
       const rv = refValue(ref, opts);
       const r = q.value / rv.value;
       const assumptions = [...v.assumptions];
@@ -148,7 +150,7 @@ export function compare(input: Quantity, inputText: string, refs: Ref[], opts: C
 
       // násobek
       const flowMismatch = q.per === 'year' && ref.q.per === null ? flowSuffix : '';
-      if ((ref.kind === 'unit' || r >= 1) && r >= 0.5 && r <= 1e6) {
+      if ((ref.kind === 'unit' || r >= 1) && r >= 0.5 && r <= (ref.kind === 'unit' ? 1e9 : 1e6)) {
         out.push({
           ...base,
           id: `multiple:${ref.id}${viaPower ? ':e' : ''}`,
@@ -176,7 +178,7 @@ export function compare(input: Quantity, inputText: string, refs: Ref[], opts: C
       }
 
       // časový ekvivalent: množství vs. roční tok
-      if (ref.time_phrase && q.per === null && ref.q.per === 'year') {
+      if (ref.time_phrase && q.per === null && ref.q.per === 'year' && r * SECONDS_PER_YEAR >= 60) {
         const t = r * SECONDS_PER_YEAR;
         out.push({
           ...base,
@@ -194,8 +196,9 @@ export function compare(input: Quantity, inputText: string, refs: Ref[], opts: C
     // časový ekvivalent: energie vs. výkon zdroje (při plném výkonu)
     if (q.dim === 'energy' && q.per === null) {
       for (const ref of refs) {
-        if (ref.q.dim !== 'power' || !ref.time_phrase) continue;
+        if (ref.q.dim !== 'power' || !ref.time_phrase || ref.kind === 'rate') continue;
         const t = timeAtFullPower(q, ref.q);
+        if (t < 60) continue;
         out.push({
           id: `time:${ref.id}`,
           type: 'time',
@@ -222,23 +225,140 @@ export function compare(input: Quantity, inputText: string, refs: Ref[], opts: C
         if (!den) continue;
         const per = q.value / den.q.value;
         const perQ: Quantity = { value: per, dim: q.dim, per: q.per };
+        if (approxMantissaValue(perQ) < 0.1) continue; // „0,000092 l na obyvatele“ nic neřekne
         const defNote = den.household_definition ? ` (${den.household_definition})` : '';
+        const perSentence = `≈ ${fmtQuantity({ ...perQ, per: null })} ${phrase}${flowSuffix}`;
+        const perSteps = [`${inputText} ÷ ${fmtExact(den.q.value)} (${den.basis}; ${citation(den)}) = ${fmtQuantity(perQ, true)}`];
+        const perAssumptions = defNote ? [`Definice domácnosti: ${den.household_definition}.`] : [];
         out.push({
           id: `per_capita:${den.id}`,
           type: 'per_capita',
-          sentence: `≈ ${fmtQuantity({ ...perQ, per: null })} ${phrase}${flowSuffix}`,
+          sentence: perSentence,
           shownValue: approxMantissaValue(perQ),
           ratio: 1,
           refs: [den],
           category: inputCategory(q.dim),
-          steps: [`${inputText} ÷ ${fmtExact(den.q.value)} (${den.basis}; ${citation(den)}) = ${fmtQuantity(perQ, true)}`],
-          assumptions: defNote ? [`Definice domácnosti: ${den.household_definition}.`] : [],
+          steps: perSteps,
+          assumptions: perAssumptions,
         });
+        // řetězení: „… – to je ≈ 35 lahvových piv na hlavu“ (jen známé věci, rozumný počet)
+        for (const ref of refs) {
+          if (ref.kind !== 'unit' || ref.q.per !== null || ref.familiarity < 3 || isLocality(ref)) continue;
+          if (!compatible(q.dim, ref.q.dim).ok) continue;
+          const k = per / refValue(ref, opts).value;
+          if (k < 1 || k > 500) continue;
+          out.push({
+            id: `per_capita:${den.id}>${ref.id}`,
+            type: 'per_capita',
+            sentence: `${perSentence} – to je ≈ ${ref.prefix ? ref.prefix + ' ' : ''}${countPhrase(k, ref.forms)} ${den.tags?.includes('households-cz') ? 'na domácnost' : 'na hlavu'}`,
+            shownValue: k,
+            ratio: k,
+            refs: [den, ref],
+            category: ref.category,
+            steps: [...perSteps, `${fmtQuantity(perQ, true)} ÷ ${fmtQuantity(ref.q)} (${ref.basis}; ${citation(ref)}) = ${fmtExact(k)}`],
+            assumptions: perAssumptions,
+          });
+        }
       }
     }
 
     // ekvivalent lokality
     out.push(...localities(q, inputText, refs, v));
+
+    // přepočty přes koeficienty (jen u množství, ne u toků; jen z původní veličiny)
+    if (!viaPower && q.per === null) out.push(...conversions(q, inputText, refs));
+  }
+  return out;
+}
+
+const PRETTY: Record<string, string> = { m2: 'm²', m3: 'm³', km2: 'km²' };
+
+/** Převedené množství česky: doba ve 4. pádě, objem v litrech, jinak automatické jednotky. */
+function fmtConverted(q: Quantity, unitHint?: string): string {
+  if (q.dim === 'time') return fmtDuration(q.value, 'acc');
+  if (q.dim === 'volume' && (unitHint === 'l' || unitHint === 'hl')) {
+    const a = approx(q.value * 1000);
+    return `${a.text} l`;
+  }
+  return fmtQuantity(q);
+}
+
+/** Číslo, které se ve výpisu převedeného množství zobrazí. */
+function convertedMantissa(q: Quantity, unitHint?: string): number {
+  const m = fmtConverted(q, unitHint).match(/^[\d\s ]+(?:,\d+)?/);
+  return m ? Number(m[0].replace(/[\s ]/g, '').replace(',', '.')) : q.value;
+}
+
+function unitText(symbol: string): string {
+  return (PRETTY[symbol] ?? symbol).replace('CO2', 'CO₂');
+}
+
+/**
+ * Přepočty přes koeficient (kind = rate), např. 112 g CO2 / 1 km:
+ *  – dopředu: vstup v `dimension` → množství v `rate_dimension` („za ≈ 450 000 km jízdy“),
+ *    a řetězeně dál na věci v té veličině („– to je ≈ 11 cest kolem Země“);
+ *  – obráceně: vstup v `rate_dimension` → množství v `dimension`.
+ */
+function conversions(q: Quantity, inputText: string, refs: Ref[]): Suggestion[] {
+  const out: Suggestion[] = [];
+  for (const rate of refs) {
+    if (rate.kind !== 'rate' || !rate.rq) continue;
+    const rateText = `${fmtExact(rate.value)} ${unitText(rate.unit)} na ${fmtExact(rate.rate_value!)} ${unitText(rate.rate_unit!)} (${rate.basis}; ${citation(rate)})`;
+
+    const comp = compatible(q.dim, rate.q.dim);
+    if (comp.ok && rate.rate_phrase) {
+      const n = (q.value / rate.q.value) * rate.rq.value;
+      const nq: Quantity = { value: n, dim: rate.rq.dim, per: null };
+      if (convertedMantissa(nq, rate.rate_unit) < 0.1) continue; // „0,0015 l benzinu“ nic neřekne
+      const text = rate.rate_phrase.replace('{n}', `≈ ${fmtConverted(nq, rate.rate_unit)}`);
+      const steps = [`${inputText} ÷ ${rateText} = ${fmtConverted(nq, rate.rate_unit)}`];
+      const assumptions = comp.note ? [comp.note] : [];
+      out.push({
+        id: `conversion:${rate.id}`,
+        type: 'conversion',
+        sentence: text,
+        shownValue: approxMantissaValue(nq),
+        ratio: 1,
+        refs: [rate],
+        category: rate.category,
+        steps,
+        assumptions,
+      });
+      // řetězení: kolik je to „věcí“ v nové veličině (cest kolem Země, maratonů, olympijských bazénů …)
+      for (const ref of refs) {
+        if (ref.kind !== 'unit' || ref.q.per !== null || isLocality(ref) || ref.q.dim !== nq.dim) continue;
+        const k = n / ref.q.value;
+        if (k < 0.5 || k > 1e6) continue;
+        out.push({
+          id: `conversion:${rate.id}>${ref.id}`,
+          type: 'conversion',
+          sentence: `${text} – to je ≈ ${ref.prefix ? ref.prefix + ' ' : ''}${countPhrase(k, ref.forms)}`,
+          shownValue: k,
+          ratio: k,
+          refs: [rate, ref],
+          category: ref.category,
+          steps: [...steps, `${fmtConverted(nq, rate.rate_unit)} ÷ ${fmtQuantity(ref.q)} (${ref.basis}; ${citation(ref)}) = ${fmtExact(k)}`],
+          assumptions,
+        });
+      }
+    }
+
+    if (rate.reverse_phrase && q.dim === rate.rq.dim) {
+      const m = (q.value / rate.rq.value) * rate.q.value;
+      const mq: Quantity = { value: m, dim: rate.q.dim, per: null };
+      if (convertedMantissa(mq) < 0.1) continue;
+      out.push({
+        id: `conversion:${rate.id}:zpet`,
+        type: 'conversion',
+        sentence: rate.reverse_phrase.replace('{n}', `≈ ${fmtConverted(mq)}`),
+        shownValue: approxMantissaValue(mq),
+        ratio: 1,
+        refs: [rate],
+        category: rate.category,
+        steps: [`${inputText} × ${rateText} = ${fmtConverted(mq)}`],
+        assumptions: [],
+      });
+    }
   }
   return out;
 }
@@ -254,7 +374,7 @@ const LOCALITY_PHRASES: Partial<Record<Dimension, (place: string, level: string)
   persons: (p) => `≈ tolik obyvatel má ${p}`,
   households: (p) => `≈ tolik domácností má ${p}`,
   dwellings: (p) => `≈ tolik obydlených bytů má ${p}`,
-  area: (p, level) => `≈ rozloha ${level === 'kraj' ? 'území' : 'obce'} ${p}`,
+  area: (p, level) => (level === 'zeme' ? `≈ tolik měří ${p}` : `≈ rozloha ${level === 'kraj' ? 'území' : 'obce'} ${p}`),
 };
 
 function powerTagFor(v: View, q: Quantity): string {
@@ -285,7 +405,7 @@ function localities(q: Quantity, inputText: string, refs: Ref[], v: View): Sugge
     return out;
   }
 
-  for (const level of ['obec', 'kraj'] as const) {
+  for (const level of ['obec', 'kraj', 'zeme'] as const) {
     const candidates = pool
       .filter((r) => r.level === level)
       .map((r) => ({ r, d: Math.abs(Math.log(target / r.q.value)) }))

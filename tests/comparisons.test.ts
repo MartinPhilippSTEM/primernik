@@ -215,3 +215,108 @@ describe('bodování', () => {
     expect(pages.flat().every((s) => s.category === 'kazdodenni')).toBe(true);
   });
 });
+
+describe('přepočty přes koeficient (rate)', () => {
+  const rateBase = { ...base, forms: { one: '-', few: '-', many: '-', dec: '-', gen: '-' }, category: 'kazdodenni' as const, year: 2026 };
+  const extra = toRefs([
+    {
+      ...rateBase,
+      id: 'fabia-co2',
+      label: 'Fabia CO2/km',
+      value: 100,
+      unit: 'g CO2',
+      dimension: 'co2',
+      kind: 'rate',
+      rate_value: 1,
+      rate_unit: 'km',
+      rate_dimension: 'length',
+      rate_phrase: 'Fabia by tolik CO₂ vypustila za {n} jízdy',
+      reverse_phrase: 'Fabia by na takové vzdálenosti vypustila {n}',
+    },
+    {
+      ...rateBase,
+      id: 'mzda',
+      label: 'mzda',
+      value: 50000,
+      unit: 'Kč',
+      dimension: 'money',
+      kind: 'rate',
+      rate_value: 1,
+      rate_unit: 'měsíc',
+      rate_dimension: 'time',
+      rate_phrase: 'průměrný zaměstnanec si tolik vydělá za {n}',
+    },
+    {
+      ...rateBase,
+      id: 'zeme',
+      label: 'obvod Země',
+      forms: { one: 'cesta kolem Země', few: 'cesty kolem Země', many: 'cest kolem Země', dec: 'cesty kolem Země', gen: 'obvodu Země' },
+      value: 40000,
+      unit: 'km',
+      dimension: 'length',
+      kind: 'unit',
+    },
+  ]);
+  it('dopředu: CO2 → km jízdy', () => {
+    const s = compare(toBase(50, 't CO2'), '50 t CO2', extra).find((x) => x.id === 'conversion:fabia-co2')!;
+    expect(s.sentence).toBe('Fabia by tolik CO₂ vypustila za ≈ 500 000 km jízdy');
+  });
+  it('řetězení: … – to je ≈ 12 cest kolem Země', () => {
+    const s = compare(toBase(50, 't CO2'), '50 t CO2', extra).find((x) => x.id === 'conversion:fabia-co2>zeme')!;
+    expect(s.sentence).toBe('Fabia by tolik CO₂ vypustila za ≈ 500 000 km jízdy – to je ≈ 13 cest kolem Země');
+    expect(s.refs.map((r) => r.id)).toEqual(['fabia-co2', 'zeme']);
+  });
+  it('obráceně: km → CO2', () => {
+    const s = compare(toBase(500, 'km'), '500 km', extra).find((x) => x.id === 'conversion:fabia-co2:zpet')!;
+    expect(s.sentence).toBe('Fabia by na takové vzdálenosti vypustila ≈ 50 kg CO₂');
+  });
+  it('peníze → doba práce (4. pád)', () => {
+    const s = compare(toBase(5e9, 'Kč'), '5 mld. Kč', extra).find((x) => x.id === 'conversion:mzda')!;
+    expect(s.sentence).toBe('průměrný zaměstnanec si tolik vydělá za ≈ 8 300 let');
+  });
+  it('koeficient se neporovnává jako běžná položka', () => {
+    expect(compare(toBase(50, 't CO2'), '50 t CO2', extra).some((x) => x.type === 'multiple' && x.refs[0].id === 'fabia-co2')).toBe(false);
+  });
+});
+
+describe('toky za den / sekundu a státy', () => {
+  const extra = toRefs([
+    {
+      ...base,
+      id: 'vltava',
+      label: 'Vltava',
+      forms: { one: 'x', few: 'x', many: 'x', dec: 'x', gen: 'ročního průtoku Vltavy' },
+      value: 100,
+      unit: 'm3',
+      dimension: 'volume',
+      per: 'second',
+      kind: 'aggregate',
+      category: 'geografie',
+      year: 2025,
+      time_phrase: 'Vltava tím proteče za {t}',
+    },
+    {
+      ...base,
+      id: 'malta',
+      label: 'Malta',
+      forms: { one: 'x', few: 'x', many: 'x', dec: 'x', gen: 'x' },
+      value: 560000,
+      unit: 'osoba',
+      dimension: 'persons',
+      kind: 'aggregate',
+      category: 'geografie',
+      year: 2026,
+      level: 'zeme',
+      place: 'Malta',
+    },
+  ]);
+  it('průtok za sekundu se převede na rok', () => {
+    expect(extra[0].q).toMatchObject({ per: 'year', value: 100 * 8760 * 3600 });
+    const s = compare(toBase(360000, 'm3'), '360 000 m³', extra).find((x) => x.id === 'time:vltava')!;
+    expect(s.sentence).toBe('Vltava tím proteče za ≈ 1 hodinu');
+  });
+  it('stát jako lokalita', () => {
+    const s = compare(toBase(550000, 'osoba'), '550 000 obyvatel', extra).find((x) => x.type === 'locality')!;
+    expect(s.sentence).toMatch(/^≈ tolik obyvatel má Malta/);
+  });
+});

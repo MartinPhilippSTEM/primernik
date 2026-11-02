@@ -8,25 +8,30 @@
    "id": "prumerna-hruba-mzda",
    "label": "průměrná hrubá měsíční mzda (2025)",
    "forms": {
-    "one": "průměrná hrubá měsíční mzda",
-    "few": "průměrné hrubé měsíční mzdy",
-    "many": "průměrných hrubých měsíčních mezd",
-    "dec": "průměrné hrubé měsíční mzdy",
-    "gen": "průměrné hrubé měsíční mzdy"
+    "one": "-",
+    "few": "-",
+    "many": "-",
+    "dec": "-",
+    "gen": "-"
    },
    "value": 48670,
    "unit": "Kč",
    "dimension": "money",
    "per": null,
-   "kind": "unit",
-   "basis": "průměr za rok 2025, na přepočtené počty zaměstnanců",
+   "kind": "rate",
+   "rate_value": 1,
+   "rate_unit": "měsíc",
+   "rate_dimension": "time",
+   "rate_phrase": "průměrný zaměstnanec si tolik (hrubého) vydělá za {n} (mzda 2025)",
+   "reverse_phrase": "průměrná hrubá mzda za takovou dobu (kalendářně) činí {n} (mzda 2025)",
+   "basis": "průměrná hrubá měsíční mzda 2025, na přepočtené počty zaměstnanců",
    "category": "verejne-finance",
    "source_name": "ČSÚ – Průměrná hrubá měsíční mzda (DataStat MZDR)",
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/MZDR",
    "source_id": "MZDR; ukazatel 5958P; CZ-NACE A-S; ČR",
    "year": 2025,
    "retrieved_at": "2026-11-02",
-   "note": "Měsíční částka; zaokrouhleno na celé koruny.",
+   "note": "Měsíční částka; zaokrouhleno na celé koruny. Hrubá mzda, ne čistá.",
    "familiarity": 3
   }
  ]

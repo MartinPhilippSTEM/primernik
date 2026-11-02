@@ -4,7 +4,7 @@
  * - chceme, aby převod výkon ↔ energie byl možný JEN přes výslovný předpoklad,
  * - tabulka je krátká, čitelná a celá pokrytá testy (tests/units.test.ts).
  */
-import type { Dimension, Per, Quantity } from './types';
+import type { DataPer, Dimension, Per, Quantity } from './types';
 
 export const BASE_UNIT: Record<Dimension, string> = {
   money: 'Kč',
@@ -33,6 +33,14 @@ const HOUR = 3600;
 /** Rok = 365 dní = 8 760 h (konvence; stejná jako „nepřetržitý provoz 8 760 h/rok“). */
 export const HOURS_PER_YEAR = 8760;
 export const SECONDS_PER_YEAR = HOURS_PER_YEAR * HOUR;
+
+/** Kolikrát za rok se opakuje tok udaný „za měsíc / den / sekundu“ (rok = 365 dní). */
+export const PER_FACTORS: Record<Exclude<DataPer, null>, number> = {
+  year: 1,
+  month: 12,
+  day: 365,
+  second: SECONDS_PER_YEAR,
+};
 
 function massLike(dim: 'co2' | 'co2e', suffix: string): Record<string, UnitDef> {
   return {
@@ -101,6 +109,7 @@ export const UNITS: Record<string, UnitDef> = {
   h: { dim: 'time', factor: HOUR },
   den: { dim: 'time', factor: 24 * HOUR },
   týden: { dim: 'time', factor: 7 * 24 * HOUR },
+  měsíc: { dim: 'time', factor: SECONDS_PER_YEAR / 12 },
   rok: { dim: 'time', factor: SECONDS_PER_YEAR },
 };
 
@@ -116,6 +125,12 @@ export function unitDef(symbol: string): UnitDef {
   const def = UNITS[symbol];
   if (!def) throw new UnitError(`Neznámá jednotka: ${symbol}`);
   return def;
+}
+
+/** Převod toku „za měsíc / den / sekundu“ na „za rok“ (u dat). */
+export function dataToBase(value: number, symbol: string, per: DataPer, rates?: Rates): Quantity {
+  if (!per) return toBase(value, symbol, null, rates);
+  return toBase(value * PER_FACTORS[per], symbol, 'year', rates);
 }
 
 /** Převod hodnoty v dané jednotce na základní jednotky. */
