@@ -1,0 +1,31 @@
+{
+  "name": "primernik",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Příměrník – přesná a dohledatelná přirovnání pro čísla (STEM)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "fetch-data": "tsx scripts/fetch-data.ts",
+    "validate-data": "tsx scripts/validate-data.ts",
+    "examples": "tsx scripts/examples.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@fontsource/instrument-sans": "^5.2.6",
+    "@fontsource/jetbrains-mono": "^5.2.6",
+    "@fontsource/newsreader": "^5.2.6"
+  }
+}

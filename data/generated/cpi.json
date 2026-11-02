@@ -1,0 +1,17 @@
+{
+ "dataset": "Index spotřebitelských cen – úhrn, roční průměr, bazický index 2015 = 100",
+ "source_name": "ČSÚ – Indexy spotřebitelských cen (DataStat CEN0101A)",
+ "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101A",
+ "source_id": "CEN0101A; TYPUDAJE IZ2015; ECOICOP 00; domácnosti celkem",
+ "retrieved_at": "2026-11-02",
+ "index": {
+  "2018": 105.3,
+  "2019": 108.3,
+  "2020": 111.8,
+  "2021": 116.1,
+  "2022": 133.6,
+  "2023": 147.8,
+  "2024": 151.4,
+  "2025": 155.2
+ }
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Příměrník – přesná a dohledatelná přirovnání pro čísla. Interní nástroj STEM." />
+    <title>Příměrník · STEM</title>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="masthead">
+        <h1>Příměrník</h1>
+        <p class="lede">Zadejte číslo s jednotkou a dostanete přesná a dohledatelná přirovnání pro prezentaci nebo projev.</p>
+      </header>
+
+      <form id="form" class="query" role="search" autocomplete="off">
+        <label for="q" class="label">Číslo s jednotkou</label>
+        <div class="query-row">
+          <input id="q" name="q" type="text" inputmode="text" spellcheck="false"
+                 placeholder="např. 5 mld. Kč, 3 MW, 200 tisíc domácností" aria-describedby="understood" />
+          <button type="submit">Přirovnat</button>
+        </div>
+        <p id="understood" class="understood" aria-live="polite"></p>
+        <div id="choices" class="choices"></div>
+      </form>
+
+      <section id="controls" class="controls" aria-label="Volby" hidden>
+        <div class="filters" role="group" aria-label="Kategorie" id="filters"></div>
+        <div id="power" class="option" hidden>
+          <label for="power-preset">Převod výkonu na energii</label>
+          <select id="power-preset"></select>
+          <span id="power-custom-wrap" hidden>
+            <label for="power-hours" class="visually-hidden">Vlastní počet hodin ročně</label>
+            <input id="power-hours" type="number" min="1" max="8760" step="1" /> h/rok
+          </span>
+          <p id="power-note" class="hint"></p>
+        </div>
+        <div id="cpi" class="option" hidden>
+          <label><input id="cpi-toggle" type="checkbox" /> <span id="cpi-label">Přepočítat ceny inflací</span></label>
+          <p class="hint" id="cpi-note"></p>
+        </div>
+      </section>
+
+      <section aria-label="Návrhy">
+        <p id="status" class="visually-hidden" aria-live="polite"></p>
+        <ol id="results" class="results"></ol>
+        <button id="more" class="more" type="button" hidden>Další návrhy</button>
+      </section>
+
+      <footer class="foot" id="foot"></footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+{
+ "dataset": "Eurostat – spotřeba elektřiny domácností, emise skleníkových plynů",
+ "source_name": "Eurostat",
+ "source_url": "https://ec.europa.eu/eurostat/web/main/data/web-services",
+ "retrieved_at": "2026-11-02",
+ "items": [
+  {
+   "retrieved_at": "2026-11-02",
+   "per": "year",
+   "kind": "aggregate",
+   "id": "eurostat-domacnosti-elektrina",
+   "label": "roční spotřeba elektřiny všech domácností v ČR (2024)",
+   "forms": {
+    "one": "roční spotřeba elektřiny všech domácností v ČR",
+    "few": "roční spotřeby elektřiny všech domácností v ČR",
+    "many": "ročních spotřeb elektřiny všech domácností v ČR",
+    "dec": "roční spotřeby elektřiny všech domácností v ČR",
+    "gen": "roční spotřeby elektřiny všech domácností v ČR"
+   },
+   "value": 15634.58,
+   "unit": "GWh",
+   "dimension": "energy",
+   "basis": "konečná spotřeba elektřiny v domácnostech, 2024",
+   "category": "energetika",
+   "source_name": "Eurostat – Households energy consumption (nrg_d_hhq)",
+   "source_url": "https://ec.europa.eu/eurostat/databrowser/view/nrg_d_hhq/default/table",
+   "source_id": "nrg_d_hhq; siec=E7000; nrg_bal=FC_OTH_HH_E; unit=GWH; geo=CZ",
+   "year": 2024,
+   "note": "Data aktualizována Eurostatem 2026-06-09. API: https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_d_hhq?format=JSON&lang=EN&geo=CZ&siec=E7000&nrg_bal=FC_OTH_HH_E&unit=GWH",
+   "familiarity": 2,
+   "time_phrase": "domácnosti v ČR tolik elektřiny spotřebují za {t}"
+  },
+  {
+   "retrieved_at": "2026-11-02",
+   "per": "year",
+   "kind": "aggregate",
+   "id": "eurostat-emise-sklenikovych-plynu-cr",
+   "label": "roční emise skleníkových plynů ČR (2024)",
+   "forms": {
+    "one": "roční emise skleníkových plynů celého Česka",
+    "few": "roční emise skleníkových plynů celého Česka",
+    "many": "ročních emisí skleníkových plynů celého Česka",
+    "dec": "ročních emisí skleníkových plynů celého Česka",
+    "gen": "ročních emisí skleníkových plynů Česka"
+   },
+   "value": 96597160,
+   "unit": "t CO2e",
+   "dimension": "co2e",
+   "basis": "celkové emise bez LULUCF, 2024",
+   "category": "energetika",
+   "source_name": "Eurostat – Greenhouse gas emissions by source sector (env_air_gge)",
+   "source_url": "https://ec.europa.eu/eurostat/databrowser/view/env_air_gge/default/table",
+   "source_id": "env_air_gge; airpol=GHG; src_crf=TOTX4_MEMO; unit=MIO_T; geo=CZ",
+   "year": 2024,
+   "note": "Celkem bez LULUCF a bez memo položek (mezinárodní letectví a lodní doprava). Eurostat přebírá národní inventuru (ČHMÚ). Aktualizace 2026-06-02.",
+   "familiarity": 2,
+   "time_phrase": "Česko vypustí tolik skleníkových plynů za {t}"
+  }
+ ]
+}
