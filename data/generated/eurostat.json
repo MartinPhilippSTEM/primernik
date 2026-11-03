@@ -2,10 +2,10 @@
  "dataset": "Eurostat – spotřeba elektřiny domácností, emise skleníkových plynů",
  "source_name": "Eurostat",
  "source_url": "https://ec.europa.eu/eurostat/web/main/data/web-services",
- "retrieved_at": "2026-11-02",
+ "retrieved_at": "2026-11-03",
  "items": [
   {
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "per": "year",
    "kind": "aggregate",
    "id": "eurostat-domacnosti-elektrina",
@@ -31,7 +31,7 @@
    "time_phrase": "domácnosti v ČR tolik elektřiny spotřebují za {t}"
   },
   {
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "per": "year",
    "kind": "aggregate",
    "id": "eurostat-emise-sklenikovych-plynu-cr",

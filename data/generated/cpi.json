@@ -3,7 +3,7 @@
  "source_name": "ČSÚ – Indexy spotřebitelských cen (DataStat CEN0101A)",
  "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101A",
  "source_id": "CEN0101A; TYPUDAJE IZ2015; ECOICOP 00; domácnosti celkem",
- "retrieved_at": "2026-11-02",
+ "retrieved_at": "2026-11-03",
  "index": {
   "2018": 105.3,
   "2019": 108.3,

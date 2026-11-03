@@ -2,7 +2,7 @@
  "dataset": "Průměrná hrubá měsíční mzda",
  "source_name": "ČSÚ",
  "source_url": "https://data.csu.gov.cz/opendata/sady/MZDR/distribuce/csv",
- "retrieved_at": "2026-11-02",
+ "retrieved_at": "2026-11-03",
  "items": [
   {
    "id": "prumerna-hruba-mzda",
@@ -30,7 +30,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/MZDR",
    "source_id": "MZDR; ukazatel 5958P; CZ-NACE A-S; ČR",
    "year": 2025,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Měsíční částka; zaokrouhleno na celé koruny. Hrubá mzda, ne čistá.",
    "familiarity": 3
   }

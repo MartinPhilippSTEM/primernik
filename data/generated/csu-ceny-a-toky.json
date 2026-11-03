@@ -2,7 +2,7 @@
  "dataset": "ČSÚ – ceny zboží a pohonných hmot, narození, zemřelí, byty, odpady",
  "source_name": "ČSÚ (DataStat)",
  "source_url": "https://data.csu.gov.cz/",
- "retrieved_at": "2026-11-02",
+ "retrieved_at": "2026-11-03",
  "items": [
   {
    "id": "cena-chleb",
@@ -25,7 +25,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01113001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -51,7 +51,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01113002; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -77,7 +77,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01122202; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -103,7 +103,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01122402; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -129,7 +129,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01125001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -155,7 +155,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01131002; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -181,7 +181,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01142002; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -207,7 +207,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01145002; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -233,7 +233,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01146001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -259,7 +259,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01148001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -285,7 +285,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01152001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -311,7 +311,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01161001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -337,7 +337,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01163001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -363,7 +363,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01175001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -389,7 +389,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01181001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -415,7 +415,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01183001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 2,
    "group": "ceny-zbozi"
@@ -441,7 +441,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01185001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -467,7 +467,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01220002; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 2,
    "group": "ceny-zbozi"
@@ -493,7 +493,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 01250001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 2,
    "group": "ceny-zbozi"
@@ -519,7 +519,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 02110001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -545,7 +545,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 02121001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -571,7 +571,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CEN0101N",
    "source_id": "CEN0101N; reprezentant 02130001; 2026-09",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Celostátní průměr cen z cenového šetření ČSÚ za daný měsíc.",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -597,7 +597,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CENPHMT",
    "source_id": "CENPHMT; 0722201; 2026-W44",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -623,7 +623,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/CENPHMT",
    "source_id": "CENPHMT; 0722101; 2026-W44",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "",
    "familiarity": 3,
    "group": "ceny-zbozi"
@@ -631,7 +631,7 @@
   {
    "per": "year",
    "kind": "aggregate",
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "familiarity": 3,
    "id": "zive-narozeni-cr",
    "label": "živě narozené děti v ČR za rok 2025",
@@ -657,7 +657,7 @@
   {
    "per": "year",
    "kind": "aggregate",
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "familiarity": 2,
    "id": "zemreli-cr",
    "label": "zemřelí v ČR za rok 2025",
@@ -683,7 +683,7 @@
   {
    "per": "year",
    "kind": "aggregate",
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "familiarity": 3,
    "id": "dokoncene-byty-cr",
    "label": "dokončené byty v ČR za rok 2025",
@@ -709,7 +709,7 @@
   {
    "per": "year",
    "kind": "aggregate",
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "familiarity": 2,
    "id": "komunalni-odpad-cr",
    "label": "komunální odpad vyprodukovaný v ČR za rok 2024",
@@ -754,7 +754,7 @@
    "source_url": "https://data.csu.gov.cz/datastat/info/SADA/SLD040",
    "source_id": "SLD040; ukazatel U_2413_1; ČR",
    "year": 2021,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Zaokrouhleno na desetiny m².",
    "familiarity": 3
   }

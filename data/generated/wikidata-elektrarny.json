@@ -2,7 +2,7 @@
  "dataset": "Elektrárny v ČR – instalovaný výkon (jen tvrzení s referencí)",
  "source_name": "Wikidata",
  "source_url": "https://query.wikidata.org/",
- "retrieved_at": "2026-11-02",
+ "retrieved_at": "2026-11-03",
  "items": [
   {
    "id": "elektrarna-q137910313",
@@ -25,7 +25,7 @@
    "source_url": "https://www.wikidata.org/wiki/Q137910313",
    "source_id": "Q137910313; P2109",
    "year": 2026,
-   "retrieved_at": "2026-11-02",
+   "retrieved_at": "2026-11-03",
    "note": "Reference ve Wikidatech – odkaz: https://www.cez.cz/nextcez/cs/o-cez/vyrobni-zdroje/obnovitelne-zdroje/slunce/provozovane-fotovoltaicke-elektrarny/fotovoltaicka-elektrarna-tachov-224041.",
    "familiarity": 1,
    "time_phrase": "Fotovoltaická elektrárna Tachov by to při plném výkonu vyrobila za {t}"
