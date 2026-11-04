@@ -95,6 +95,8 @@ interface UnitWord {
 }
 
 const DURATION_UNITS: UnitWord[] = [
+  { seconds: 1e-6, forms: { one: 'mikrosekunda', few: 'mikrosekundy', many: 'mikrosekund', dec: 'mikrosekundy' }, acc1: 'mikrosekundu' },
+  { seconds: 1e-3, forms: { one: 'milisekunda', few: 'milisekundy', many: 'milisekund', dec: 'milisekundy' }, acc1: 'milisekundu' },
   { seconds: 1, forms: { one: 'sekunda', few: 'sekundy', many: 'sekund', dec: 'sekundy' }, acc1: 'sekundu' },
   { seconds: 60, forms: { one: 'minuta', few: 'minuty', many: 'minut', dec: 'minuty' }, acc1: 'minutu' },
   { seconds: 3600, forms: { one: 'hodina', few: 'hodiny', many: 'hodin', dec: 'hodiny' }, acc1: 'hodinu' },
@@ -103,9 +105,11 @@ const DURATION_UNITS: UnitWord[] = [
   { seconds: 8760 * 3600, forms: { one: 'rok', few: 'roky', many: 'let', dec: 'roku' } },
 ];
 
-/** Volba jednotky: do 90 s sekundy, do hodiny minuty, do 48 h hodiny, do 60 dní dny, do 2 let měsíce, pak roky. */
+/** Volba jednotky: pod 1 ms mikrosekundy, pod 1 s milisekundy, do 90 s sekundy, do hodiny minuty, do 48 h hodiny, do 60 dní dny, do 2 let měsíce, pak roky. */
 function durationUnit(seconds: number): UnitWord {
-  const [s, m, h, d, mo, y] = DURATION_UNITS;
+  const [us, ms, s, m, h, d, mo, y] = DURATION_UNITS;
+  if (seconds < 1e-3) return us;
+  if (seconds < 1) return ms;
   if (seconds < 90) return s;
   if (seconds < 3600) return m;
   if (seconds < 48 * 3600) return h;

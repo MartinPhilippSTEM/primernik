@@ -73,6 +73,9 @@ describe('doby', () => {
     expect(fmtDuration(86400 * 365 * 5, 'acc')).toBe('5 let');
     expect(fmtDuration(86400 * 365 * 2.5, 'acc')).toBe('2,5 roku');
     expect(fmtDuration(120, 'acc')).toBe('2 minuty');
+    expect(fmtDuration(0.000334, 'acc')).toBe('330 mikrosekund');
+    expect(fmtDuration(0.001, 'acc')).toBe('1 milisekundu');
+    expect(fmtDuration(0.0000033, 'acc')).toBe('3,3 mikrosekundy');
   });
 });
 

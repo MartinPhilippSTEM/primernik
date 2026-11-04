@@ -201,7 +201,7 @@ describe('bodování', () => {
     for (const page of pages) {
       const counts: Record<string, number> = {};
       page.forEach((s) => (counts[s.type] = (counts[s.type] ?? 0) + 1));
-      expect(Math.max(...Object.values(counts))).toBeLessThanOrEqual(2);
+      expect(Math.max(...Object.values(counts))).toBeLessThanOrEqual(3); // 2, výjimečně 3 kvůli pokrytí kategorií
       expect(page.length).toBeLessThanOrEqual(8);
     }
   });
@@ -209,6 +209,12 @@ describe('bodování', () => {
     const s = compare(toBase(1, 'TWh'), '1 TWh', refs).find((x) => x.id === 'time:temelin')!;
     expect(s.hypothetical).toBe(true);
     expect(score(s, 2026).ratio).toBe(0.5);
+  });
+  it('první stránka pokryje všechny kategorie, pro které existuje návrh', () => {
+    const all = compare(toBase(5e9, 'Kč'), '5 mld. Kč', refs);
+    const pages = rankPages(all, { currentYear: 2026 });
+    const available = new Set(rankPages(all, { currentYear: 2026, pageSize: 1000, perType: 1000 }).flat().map((s) => s.category));
+    expect(new Set(pages[0].map((s) => s.category))).toEqual(available);
   });
   it('filtr kategorie', () => {
     const pages = rankPages(compare(toBase(5e9, 'Kč'), '5 mld. Kč', refs), { currentYear: 2026, categories: ['kazdodenni'] });

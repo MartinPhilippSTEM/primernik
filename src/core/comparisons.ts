@@ -94,12 +94,6 @@ function citation(ref: Ref): string {
   return `${ref.source_name}, ${ref.year}`;
 }
 
-function inputCategory(dim: Dimension): Category {
-  if (dim === 'money') return 'verejne-finance';
-  if (dim === 'energy' || dim === 'power' || dim === 'co2' || dim === 'co2e') return 'energetika';
-  return 'geografie';
-}
-
 function views(q: Quantity, opts: CompareOptions): View[] {
   const out: View[] = [{ q, assumptions: [], steps: [] }];
   if (q.dim === 'power' && opts.power) {
@@ -237,7 +231,7 @@ export function compare(input: Quantity, inputText: string, refs: Ref[], opts: C
           shownValue: approxMantissaValue(perQ),
           ratio: 1,
           refs: [den],
-          category: inputCategory(q.dim),
+          category: 'geografie', // „na obyvatele“ patří k obyvatelstvu
           steps: perSteps,
           assumptions: perAssumptions,
         });

@@ -23,26 +23,27 @@ Poslední stažení všech zdrojů: **2. 11. 2026**. U každé položky je datum
 - Ve Wikidatech má většina elektráren výkon s referencí, ale **bez roku** (chybí kvalifikátor data i datum stažení reference). Podle pravidla „každé číslo má rok“ je skript vynechá, prošla jen 1 elektrárna. Výkony hlavních elektráren jsou proto v kurátorovaných datech z výroční zprávy ČEZ.
 - Ukazatel „emise na obyvatele“ (`env_air_gge`, jednotka `T_HAB`) Eurostat pro ČR neposkytuje.
 
-## Kurátorované (`data/curated.json`, 211 položek)
+## Kurátorované (`data/curated.json`, 370 položek)
 
-Každá položka má přímý odkaz, rok, datum ověření (2. 11. 2026) a doslovný úryvek ze zdroje (`evidence`). Položky dohledali a otevřeli pomocní výzkumní agenti. Náhodný vzorek ověřil ručně hlavní běh: 15 položek v první verzi a 6 položek z druhé vlny, všechny odpovídaly zdroji.
+Každá položka má přímý odkaz, rok, datum ověření (2. 11. 2026) a doslovný úryvek ze zdroje (`evidence`). Položky dohledali a otevřeli pomocní výzkumní agenti. Náhodné vzorky ověřil ručně hlavní běh ve třech vlnách: 15, 6 a 5 položek, všechny odpovídaly zdroji.
 
 | Okruh | Příklady | Hlavní zdroje |
 |---|---|---|
-| Energetika | výroba Temelína a Dukovan, výkony elektráren, ERÚ 2025, emise EU ETS, výhřevnost a emisní faktory paliv, emisní faktor elektřiny | ERÚ, ČEZ (výroční zpráva 2025), MŽP (NIR 2026), MPO, OTE, Evropská komise |
-| Veřejné finance | státní rozpočet 2026 a kapitoly, HDP, dluh, Dukovany II, F-35, Česká televize | zákon č. 38/2026 Sb., MF, MO, MPSV, ČT |
-| Lidé a toky | Letiště Praha, metro a tramvaje, ČD, ZOO Praha, NPÚ, Národní muzeum, hasiči, Sokol, Junák, Sněmovna, Pendolino, O2 arena, MS v hokeji 2024 | provozovatelé, ČSÚ, MV, MZ, IIHF |
-| Délky a hmotnosti | Země–Měsíc, Země–Slunce, Eiffelova věž, Žižkovská věž, Macocha, Hranická propast, Vltava, metro B, maraton, Tour de France, jednokoruna, ISS, zlaté rezervy ČNB | NASA, toureiffel.paris, Správa jeskyní, ČSÚ ročenka, DPP, World Athletics, ČNB |
-| Plochy, objemy, průtoky | Orlík, Slapy, Želivka, průtok Vltavy, Labe, Moravy a Odry, stoletá voda v Praze, národní parky, chmelnice, vinice, lesy, Monako, Bodamské jezero | Povodí Vltavy, ČHMÚ, ČSÚ/AOPK, ČÚZK, IMSEE, IGKB |
-| Každodenní | ceníky Škoda, MHD, poplatky, dálniční známka, spotřeba piva, masa a vody na hlavu, mikrovlnka, rychlovarná konvice, baterie MacBooku a elektrokola | výrobci, DPP, ČSÚ, eDálnice |
+| Energetika | výroba Temelína a Dukovan, výkony elektráren, ERÚ 2025, emise EU ETS, výhřevnost a emisní faktory paliv, cena elektřiny, Elroq, dotace NZÚ na tepelné čerpadlo | ERÚ, ČEZ, MŽP (NIR 2026), MPO, OTE, Eurostat, Škoda |
+| Veřejné finance | státní rozpočet 2026 a kapitoly (vč. Kanceláře prezidenta, Sněmovny, Senátu), HDP, dluh, Dukovany II, F-35, Leopard 2A8, CV90, Vltavská filharmonie, odměna za olympijské zlato | zákon č. 38/2026 Sb., MF, MO, Praha, ČOV |
+| Lidé a toky | Letiště Praha, metro, ČD, ZOO Praha, NPÚ, Národní muzeum, hasiči, Sokol, Junák, Sněmovna; kapacity railjetu, ComfortJetu, Pendolina, autobusů DPP | provozovatelé, ČSÚ, MV, MZ |
+| Svět a zajímavosti | Tokyo Skytree, Big Ben, šikmá věž v Pise, Golden Gate, tunel pod Gotthardem a Lamanšským průlivem, LHC, Wembley, Louvre, Šinkansen, ICE, Emirates A380, Saturn V, Bagger 293, rychlost světla, ISS, Mariánský příkop, Bajkal, Velký bariérový útes, kostra plejtvaka, rekordní dýně, Nobelova cena, Wimbledon, MS ve fotbale 2026, Liga mistrů, Salvator Mundi, Webbův teleskop, Super Bowl, Eurovize, Oktoberfest | oficiální weby staveb a provozovatelů, NASA, ESA, BIPM, NOAA, UNESCO, CERN, Guinness World Records, FIFA, UEFA, NASA OIG, GAO |
+| Geografie | Pražský hrad (Guinness), katedrála sv. Víta, tunel Blanka, Macocha, Punkevní jeskyně, Orlík, národní parky, chmel, pivo, kapr, víno | ČSÚ, TSK, Správa jeskyní, Povodí Vltavy, MZe |
+| Každodenní | iPhone, LEGO Millennium Falcon, Netflix, Spotify, Tesla Model 3, Škoda Kodiaq a Superb, vstupné do ZOO a na Hrad, kino, ceníky MHD | apple.com/cz, lego.com, výrobci, ZOO Praha, hrad.cz, Unie filmových distributorů |
 
-**Přepočtové koeficienty** (`kind: "rate"`, 21 položek) propojují veličiny:
+**Přepočtové koeficienty** (`kind: "rate"`, 36 položek) propojují veličiny:
 - emise a spotřeba Škody Fabia a Octavia (WLTP), spotřeba Elroqu a Enyaqu;
 - výhřevnost a emisní faktory benzínu, nafty, hnědého uhlí a zemního plynu (MŽP), hustota benzínu;
 - emisní faktor české elektřiny 2025 (MPO);
 - cena elektřiny a plynu pro domácnosti (Eurostat, 1. pololetí 2026);
 - minimální hodinová mzda (MPSV);
-- energie v Horalkách, Pilsner Urquell a Kofole (údaje z obalu na rohlik.cz).
+- energie v Horalkách, Pilsner Urquell a Kofole (údaje z obalu na rohlik.cz);
+- rychlosti: světlo (BIPM), Země kolem Slunce, rotace Země, Měsíc, ISS, Parker Solar Probe, Apollo 10, Thrust SSC, rekordní TGV, Šinkansen, pražské metro, Usain Bolt.
 
 Automaticky se k nim přidává průměrná hrubá mzda (ČSÚ).
 
@@ -67,7 +68,9 @@ Fakta (čísla) nejsou autorským dílem. Z textů zdrojů jsou převzaty jen kr
 
 ### Dohledáno, ale vyřazeno (nejednoznačné nebo neověřitelné)
 
-Kapacita tramvaje 15T (zdroj uvádí jen 139 + 60), návštěvnost Pražského hradu (rok nebyl v dokumentu uveden), obvod Země (NASA uvádí jen průměr), Petřínská rozhledna a zvon Zikmund (zdroje se liší), Pendolino – délka a hmotnost, délka D1, Central Park (jen v akrech), Lednicko-valtický areál (143 vs. 283 km²), sedadla letadel Smartwings, kapacita Národního divadla, Dukovany – instalovaný výkon (ČEZ uvádí 2 048 i 2 096 MW), Lipno I (139 vs. 120 MW), Počerady uhelná (1 050 vs. 1 000 MW) a paroplynová (844,9 vs. 888 MW), Dětmarovice (odstaveno 2025), Chvaletice (citaci nešlo přesně ověřit), Ledvice a Mělník (zdroj uvádí jen bloky, součet by byl dopočet), Pražský hrad (rozloha se liší podle vymezení), Petřínská rozhledna (58,7 vs. 65,5 m), rozpočet Prahy 2026 (praha.eu nešel otevřít), rozpočet SFDI 2026, počet zaměstnaných (jen v nečitelných PDF), baterie Tesla Model Y (výrobce kapacitu neuvádí).
+Ve třetí vlně: Petřínská rozhledna a Pančavský vodopád (zdroje se liší), Pravčická brána (26 vs. 26,5 m), produkce vína a sklizeň hroznů 2025 (zdroj si sám odporuje), vstupenky KVIFF (počítají lístky, ne lidi), cena Elbphilharmonie (neoficiální zdroj), Koloseum, Sagrada Família (výška), Burj Khalifa (web blokuje přístup), hmotnosti a délky jen v librách, stopách a akrech (Socha svobody, Hoover Dam, Central Park), Big Mac a PlayStation (oficiální cena nešla otevřít).
+
+Dříve: Kapacita tramvaje 15T (zdroj uvádí jen 139 + 60), návštěvnost Pražského hradu (rok nebyl v dokumentu uveden), Petřínská rozhledna a zvon Zikmund (zdroje se liší), Pendolino – délka a hmotnost, délka D1, Central Park (jen v akrech), Lednicko-valtický areál (143 vs. 283 km²), sedadla letadel Smartwings, kapacita Národního divadla, Dukovany – instalovaný výkon (ČEZ uvádí 2 048 i 2 096 MW), Lipno I (139 vs. 120 MW), Počerady uhelná (1 050 vs. 1 000 MW) a paroplynová (844,9 vs. 888 MW), Dětmarovice (odstaveno 2025), Chvaletice (citaci nešlo přesně ověřit), Ledvice a Mělník (zdroj uvádí jen bloky, součet by byl dopočet), Pražský hrad (rozloha se liší podle vymezení; nyní doplněna hodnota Guinnessovy knihy rekordů 7,28 ha), Petřínská rozhledna (58,7 vs. 65,5 m), rozpočet Prahy 2026 (praha.eu nešel otevřít), rozpočet SFDI 2026, počet zaměstnaných (jen v nečitelných PDF), baterie Tesla Model Y (výrobce kapacitu neuvádí).
 
 ## Předvolby „výkon → energie“
 

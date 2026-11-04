@@ -104,7 +104,7 @@ export interface SelectOptions {
   categories?: Category[] | null;
   /** Nejvýš kolik návrhů na stránku (8). Limit 2 na typ může stránku zkrátit. */
   pageSize?: number;
-  /** Nejvýš kolik návrhů jednoho typu na stránce. */
+  /** Nejvýš kolik návrhů jednoho typu na stránce (kvůli pokrytí všech kategorií výjimečně o 1 víc). */
   perType?: number;
   /** Nejvýš kolik návrhů jedné kategorie na stránce (pestrost; při filtru kategorie se neuplatní). */
   perCategory?: number;
@@ -140,26 +140,32 @@ export function rankPages(all: Suggestion[], opts: SelectOptions): Ranked[][] {
     const count: Partial<Record<SuggestionType, number>> = {};
     const catCount: Partial<Record<Category, number>> = {};
     const groups = new Set<string>();
-    // 1. průchod s limitem na kategorii; 2. průchod bez něj, když by stránka měla méně než 5 návrhů
-    for (const catLimit of [perCategory, Infinity]) {
-      for (const s of pool) {
-        if (page.length >= (catLimit === Infinity ? Math.min(5, pageSize) : pageSize)) break;
-        if (page.includes(s)) continue;
-        if ((count[s.type] ?? 0) >= perType) continue;
-        if ((catCount[s.category] ?? 0) >= catLimit) continue;
-        // pestrost: z jedné skupiny dat (HDP států, ceny potravin …) nejvýš jeden návrh na stránku
-        const sGroups = s.refs.map((r) => r.group).filter((g): g is string => !!g);
-        if (sGroups.some((g) => groups.has(g))) continue;
-        // u řetězených návrhů nejvýš jeden na stránku od stejného výchozího koeficientu / jmenovatele
-        const anchor = s.type === 'conversion' || s.type === 'per_capita' ? `anchor:${s.refs[0].id}` : null;
-        if (anchor && groups.has(anchor)) continue;
-        sGroups.forEach((g) => groups.add(g));
-        if (anchor) groups.add(anchor);
-        page.push(s);
-        count[s.type] = (count[s.type] ?? 0) + 1;
-        catCount[s.category] = (catCount[s.category] ?? 0) + 1;
+    const tryAdd = (s: Ranked, catLimit: number, typeLimit: number): boolean => {
+      if (page.includes(s)) return false;
+      if ((count[s.type] ?? 0) >= typeLimit) return false;
+      if ((catCount[s.category] ?? 0) >= catLimit) return false;
+      // pestrost: z jedné skupiny dat (HDP států, ceny potravin …) nejvýš jeden návrh na stránku
+      const sGroups = s.refs.map((r) => r.group).filter((g): g is string => !!g);
+      if (sGroups.some((g) => groups.has(g))) return false;
+      // u řetězených návrhů nejvýš jeden na stránku od stejného výchozího koeficientu / jmenovatele
+      const anchor = s.type === 'conversion' || s.type === 'per_capita' ? `anchor:${s.refs[0].id}` : null;
+      if (anchor && groups.has(anchor)) return false;
+      sGroups.forEach((g) => groups.add(g));
+      if (anchor) groups.add(anchor);
+      page.push(s);
+      count[s.type] = (count[s.type] ?? 0) + 1;
+      catCount[s.category] = (catCount[s.category] ?? 0) + 1;
+      return true;
+    };
+    // 1. pokrytí: nejlepší návrh z každé kategorie (když typ už má 2 návrhy, výjimečně 3.)
+    if (!opts.categories?.length) {
+      for (const typeLimit of [perType, perType + 1]) {
+        for (const s of pool) if (page.length < pageSize) tryAdd(s, 1, typeLimit);
       }
     }
+    // 2. doplnění podle skóre s limitem na kategorii; 3. bez něj, když by stránka měla méně než 5 návrhů
+    for (const s of pool) if (page.length < pageSize) tryAdd(s, perCategory, perType);
+    for (const s of pool) if (page.length < Math.min(5, pageSize)) tryAdd(s, Infinity, perType);
     page.sort((x, y) => y.score.total - x.score.total);
     pages.push(page);
     pool = pool.filter((s) => !page.includes(s));

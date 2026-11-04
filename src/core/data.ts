@@ -16,7 +16,7 @@ export interface Dataset {
 const DIMENSIONS: Dimension[] = [
   'money', 'power', 'energy', 'mass', 'co2', 'co2e', 'area', 'length', 'volume', 'persons', 'households', 'dwellings', 'time',
 ];
-const CATEGORIES: Category[] = ['kazdodenni', 'energetika', 'verejne-finance', 'geografie'];
+const CATEGORIES: Category[] = ['kazdodenni', 'energetika', 'verejne-finance', 'geografie', 'zajimavosti'];
 
 /** Věrohodný rozsah hodnoty v základních jednotkách (spodní a horní mez). */
 export const PLAUSIBLE: Record<Dimension, [number, number]> = {
@@ -56,7 +56,7 @@ export function validateItem(it: Partial<RefItem>, rates?: Rates): string[] {
   }
   if (it.time_phrase && !it.time_phrase.includes('{t}')) e.push('time_phrase musí obsahovat {t}');
   if (it.source_url && !/^https:\/\/\S+$/.test(it.source_url)) e.push('source_url musí být https odkaz');
-  if (it.year !== undefined && !(Number.isInteger(it.year) && it.year >= 1990 && it.year <= 2035)) e.push(`nevěrohodný rok ${it.year}`);
+  if (it.year !== undefined && !(Number.isInteger(it.year) && it.year >= 1800 && it.year <= 2035)) e.push(`nevěrohodný rok ${it.year}`);
   if (it.retrieved_at && !/^\d{4}-\d{2}-\d{2}$/.test(it.retrieved_at)) e.push('retrieved_at musí být YYYY-MM-DD');
   if (it.familiarity !== undefined && ![1, 2, 3].includes(it.familiarity)) e.push('familiarity musí být 1–3');
   const f = it.forms;

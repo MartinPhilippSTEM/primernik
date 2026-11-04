@@ -35,13 +35,14 @@ export interface Quantity {
   currency?: string;
 }
 
-export type Category = 'kazdodenni' | 'energetika' | 'verejne-finance' | 'geografie';
+export type Category = 'kazdodenni' | 'energetika' | 'verejne-finance' | 'geografie' | 'zajimavosti';
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   kazdodenni: 'Každodenní',
   energetika: 'Energetika',
   'verejne-finance': 'Veřejné finance',
   geografie: 'Geografie a obyvatelstvo',
+  zajimavosti: 'Svět a zajímavosti',
 };
 
 /** Tvary popisku pro větu „≈ N <tvar>“ a pro podíl „X % <gen>“. */

@@ -6,7 +6,7 @@ Interní nástroj STEM, Ústavu empirických výzkumů. Do pole zadáte číslo 
 > 5 mld. Kč: stát tolik vydá ze státního rozpočtu za ≈ 18 hodin
 > 1 TWh: české jaderné elektrárny vyrobí tolik elektřiny za ≈ 11 dní
 
-Má přes 3 300 referenčních hodnot: od ceny piva a výšky Eiffelovy věže po průtok Vltavy, výrobu Temelína a obyvatele Malty. Každé číslo má zdroj, rok a datum stažení. U každého návrhu je rozbalovací detail výpočtu a tlačítko **Kopírovat**, které zkopíruje větu i se zdrojem. Zadání se ukládá do adresy stránky (`?q=…`), takže odkaz můžete poslat kolegovi.
+Má téměř 3 500 referenčních hodnot: od ceny piva, iPhonu a výšky Eiffelovy věže po kapacitu Šinkansenu, rychlost světla, průtok Vltavy, výrobu Temelína a obyvatele Malty. Každé číslo má zdroj, rok a datum stažení. U každého návrhu je rozbalovací detail výpočtu a tlačítko **Kopírovat**, které zkopíruje větu i se zdrojem. Zadání se ukládá do adresy stránky (`?q=…`), takže odkaz můžete poslat kolegovi.
 
 Aplikace nic neplatí a nic nevolá: je to statická stránka, data jsou přibalená. Žádná AI, žádný server.
 
@@ -79,13 +79,13 @@ Kurátorované položky jsou čísla, která nejdou stáhnout automaticky: ceny,
 |---|---|
 | `forms` | tvary pro větu: `one` = „1 nová Škoda Fabia“, `few` = „3 nové Škody Fabia“, `many` = „12 nových Škod Fabia“, `dec` = „1,5 nové Škody Fabia“, `gen` = podíl „0,3 % nové Škody Fabia“ |
 | `prefix` (nepovinné) | text před číslem, např. `"roční spotřeba elektřiny"` → „≈ roční spotřeba elektřiny 7 100 průměrných bytů“; `forms` jsou pak ve 2. pádě |
-| `value`, `unit` | hodnota tak, jak ji uvádí zdroj. Jednotky: `Kč`, `EUR`, `USD`, `W`, `kW`, `MW`, `GW`, `kWh`, `MWh`, `GWh`, `TWh`, `kg`, `t`, `t CO2`, `t CO2e`, `m2`, `ha`, `km2`, `m`, `km`, `m3`, `l`, `osoba`, `domácnost`, `byt`, `s`, `h`, `den` |
+| `value`, `unit` | hodnota tak, jak ji uvádí zdroj. Jednotky: `Kč`, `EUR`, `USD`, `GBP`, `CHF`, `SEK`, `NOK`, `DKK`, `PLN`, `HUF`, `JPY`, `CNY` (převod kurzem ČNB dělá aplikace), `W`, `kW`, `MW`, `GW`, `kWh`, `MWh`, `GWh`, `TWh`, `kg`, `t`, `t CO2`, `t CO2e`, `m2`, `ha`, `km2`, `m`, `km`, `m3`, `l`, `osoba`, `domácnost`, `byt`, `s`, `h`, `den` |
 | `dimension` | `money`, `power`, `energy`, `mass`, `co2`, `co2e`, `area`, `length`, `volume`, `persons`, `households`, `dwellings`, `time` |
 | `per` | tok v čase tak, jak ho uvádí zdroj: `"year"`, `"month"`, `"day"`, `"second"` (průtok Vltavy 145 m³/s → `value: 145, unit: "m3", per: "second"`); aplikace to sama převede na rok. U stavu `null` |
 | `kind` | `"unit"` = věc, kterou jde násobit (auto, hřiště); `"aggregate"` = celek, ze kterého se počítá podíl (rozpočet, emise ČR); `"rate"` = přepočtový koeficient (viz níže) |
 | `group` (nepovinné) | skupina podobných položek (např. `"statni-rozpocet-2026"`); na stránce se z jedné skupiny ukáže nejvýš jeden návrh |
-| `category` | `kazdodenni`, `energetika`, `verejne-finance`, `geografie` |
-| `year` | rok, ke kterému hodnota platí (u cen rok ceníku; podle něj se dělá přepočet inflací) |
+| `category` | `kazdodenni`, `energetika`, `verejne-finance`, `geografie`, `zajimavosti` (Svět a zajímavosti: slavné stavby, stroje, rekordy, příroda, vesmír) |
+| `year` | rok, ke kterému hodnota platí (u cen rok ceníku; podle něj se dělá přepočet inflací). Historické údaje mohou být i starší (např. Golden Gate 1937) |
 | `familiarity` | 1–3; 3 = zná každý (Fabia, Temelín, státní rozpočet) |
 | `time_phrase` (nepovinné) | u ročních toků věta pro časový ekvivalent, `{t}` se nahradí dobou: `"stát tolik vydá ze státního rozpočtu za {t}"` |
 
@@ -98,7 +98,7 @@ Kurátorované položky jsou čísla, která nejdou stáhnout automaticky: ceny,
   "reverse_phrase": "nová Škoda Fabia by na takové vzdálenosti vypustila {n} (WLTP)" }
 ```
 
-Aplikace z něj vytvoří „50 t CO2: nová Škoda Fabia by tolik CO₂ vypustila za ≈ 450 000 km jízdy“. Návrh umí i navázat na další věc v nové veličině: „… – to je ≈ 11 cest kolem Země“. Funguje to i obráceně: z „500 km“ udělá „… vypustila by ≈ 56 kg CO₂“. U koeficientu se `forms` nevyplňují, stačí pomlčky.
+Aplikace z něj vytvoří „50 t CO2: nová Škoda Fabia by tolik CO₂ vypustila za ≈ 450 000 km jízdy“. Návrh umí i navázat na další věc v nové veličině: „… – to je ≈ 11 cest kolem Země“. Funguje to i obráceně: z „500 km“ udělá „… vypustila by ≈ 56 kg CO₂“. Rychlosti jsou také koeficienty (světlo, ISS, Šinkansen, Usain Bolt): „100 m: světlo by takovou vzdálenost urazilo za ≈ 0,33 mikrosekundy“. U koeficientu se `forms` nevyplňují, stačí pomlčky.
 
 **Pravidla:** jen hodnoty, které jste sami viděli na primárním zdroji (úřad, výrobce, provozovatel). Nic neodhadovat ani nedopočítávat. Wikipedie ani zpravodajské weby nejsou zdroj.
 
@@ -157,7 +157,8 @@ Domácnosti jsou vždy hospodařící domácnosti ze Sčítání 2021. Průměrn
 **Výběr.** Skóre = 0,40 × poměr + 0,30 × známost + 0,15 × kulatost + 0,15 × čerstvost.
 - Poměr: násobky ideálně 1–100, podíly 1–50 %.
 - Hypotetické návrhy („při plném výkonu“) mají poměr poloviční.
-- Na stránku nejvýš 8 návrhů, z každého typu nejvýš 2 a z každé skupiny dat (státy, ceny potravin, kapitoly rozpočtu…) nejvýš 1. Rozpis skóre je v detailu každého návrhu.
+- **Pestrost:** první stránka obsahuje nejlepší návrh z každé kategorie, pro kterou existuje vhodné přirovnání (každodenní, energetika, veřejné finance, geografie a obyvatelstvo, svět a zajímavosti). Pak se doplní podle skóre.
+- Na stránku nejvýš 8 návrhů. Z každého typu nejvýš 2 (výjimečně 3, když je to potřeba k pokrytí všech kategorií), z jedné kategorie nejvýš 3 a z každé skupiny dat (státy, ceny potravin, kapacity vlaků, rychlosti…) nejvýš 1. Rozpis skóre je v detailu každého návrhu.
 - Tlačítko **Další návrhy** přidá další stránku stejně pestrých přirovnání.
 
 **Inflace.** Volitelně lze starší ceny přepočítat indexem spotřebitelských cen ČSÚ na ceny posledního celého roku. U výsledku je pak napsáno „v cenách roku X“. Bez přepočtu nesou ceny starší než loňské ve větě „(ceny roku X)“.

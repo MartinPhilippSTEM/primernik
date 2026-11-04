@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parse } from '../src/core/parser';
 
-const rates = { date: '2026-11-02', rates: { EUR: 24.3, USD: 21.0, GBP: 28.0 } };
+const rates = { date: '2026-11-02', rates: { EUR: 24.3, USD: 21.0, GBP: 28.0, CHF: 26.0, JPY: 0.14 } };
 
 /** [vstup, dimenze, hodnota v základních jednotkách, tok] */
 const OK: [string, string, number, 'year' | null][] = [
@@ -20,6 +20,8 @@ const OK: [string, string, number, 'year' | null][] = [
   ['10 000 Kč ročně', 'money', 1e4, 'year'],
   ['2 000 Kč/měsíc', 'money', 24000, 'year'],
   ['1 mil. EUR', 'money', 24.3e6, null],
+  ['3 mil. švýcarských franků', 'money', 78e6, null],
+  ['1 000 jenů', 'money', 140, null],
   ['3 MW', 'power', 3e6, null],
   ['3MW', 'power', 3e6, null],
   ['3 mw', 'power', 3e6, null],
