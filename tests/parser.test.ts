@@ -84,13 +84,13 @@ describe('parser – chyby a okraje', () => {
     expect(parse('').ok).toBe(false);
     expect(parse('5 žirafích krků').ok).toBe(false);
   });
-  it('chybí jednotka → nabídne možnosti („5,5 mil“)', () => {
+  it('chybí jednotka → počítá s korunami a nabídne další výklady („5,5 mil“)', () => {
     const r = parse('5,5 mil');
-    expect(r.ok).toBe(false);
-    if (!r.ok) {
-      expect(r.error).toMatch(/jednotka/);
-      expect(r.suggestions).toContain('5,5 mil. Kč');
-    }
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.interpretations.map((i) => i.unit)).toEqual(['Kč', 'osoba', 'domácnost', 'kWh', 't']);
+    expect(r.interpretations[0].quantity.value).toBe(5.5e6);
+    expect(r.interpretations[0].notes[0]).toMatch(/Jednotka chybí/);
   });
   it('CO2 bez hmotnosti', () => {
     expect(parse('50 000 CO2').ok).toBe(false);
@@ -128,5 +128,73 @@ describe('parser – výklad „Rozumím“', () => {
   it('EUR uvádí kurz ČNB', () => {
     const r = parse('1 mil. EUR', rates);
     expect(r.ok && r.interpretations[0].notes.join(' ')).toMatch(/kurzem ČNB/);
+  });
+});
+
+/** Čísla a jednotky slovy, s diakritikou i bez ní. */
+const WORDS: [string, string, number][] = [
+  ['deset milionů', 'money', 1e7],
+  ['deset milionů korun', 'money', 1e7],
+  ['deset milionu korun', 'money', 1e7],
+  ['Deset Milionů Kč', 'money', 1e7],
+  ['pět miliard korun českých', 'money', 5e9],
+  ['půl miliardy eur', 'money', 0.5e9 * 24.3],
+  ['pul miliardy eur', 'money', 0.5e9 * 24.3],
+  ['jeden a půl milionu korun', 'money', 1.5e6],
+  ['dva a půl tisíce korun', 'money', 2500],
+  ['jedna celá pět milionu korun', 'money', 1.5e6],
+  ['dvě stě padesát tisíc lidí', 'persons', 250000],
+  ['dvěstě padesát tisíc obyvatel', 'persons', 250000],
+  ['pět set tisíc domácností', 'households', 500000],
+  ['tři sta tisíc tun', 'mass', 3e8],
+  ['milion Kč', 'money', 1e6],
+  ['tisíc korun', 'money', 1000],
+  ['sto metrů', 'length', 100],
+  ['sto dvacet kilometrů', 'length', 120000],
+  ['pětadvacet megawattů', 'power', 25e6],
+  ['dvacet pět megawattů', 'power', 25e6],
+  ['dvacetpět megawattů', 'power', 25e6],
+  ['tři terawatthodiny', 'energy', 3e12],
+  ['dvanáct gigawatthodin ročně', 'energy', 12e9],
+  ['padesát tisíc tun CO2', 'co2', 5e7],
+  ['padesát tisíc tun oxidu uhličitého', 'co2', 5e7],
+  ['milion tun CO2 ekvivalentu', 'co2e', 1e9],
+  ['dva miliony tři sta tisíc obyvatel', 'persons', 2.3e6],
+  ['osmnáct hektarů', 'area', 180000],
+  ['tři sta hektaru', 'area', 3e6],
+  ['čtyřicet kilometrů čtverečních', 'area', 4e7],
+  ['deset arů', 'area', 1000],
+  ['pět metrů krychlových', 'volume', 5],
+  ['pět krychlových metrů', 'volume', 5],
+  ['sedm set litrů', 'volume', 0.7],
+  ['dvě stě mililitrů', 'volume', 0.0002],
+  ['deset tisíc studentů', 'persons', 10000],
+  ['tisíc návštěvníků', 'persons', 1000],
+  ['osm hodin', 'time', 8 * 3600],
+  ['tři měsíce', 'time', 3 * 8760 * 3600 / 12],
+  ['devadesát devět kil', 'mass', 99],
+  ['€5 mil.', 'money', 5e6 * 24.3],
+  ['$ 3 mld', 'money', 3e9 * 21.0],
+  ['5 milionu korun', 'money', 5e6],
+  ['10 000 domacnosti', 'households', 10000],
+  ['120 MWh rocne', 'energy', 1.2e8],
+];
+
+describe('parser – čísla a jednotky slovy', () => {
+  it.each(WORDS)('%s', (input, dim, value) => {
+    const r = parse(input, rates);
+    expect(r.ok, JSON.stringify(r)).toBe(true);
+    if (!r.ok) return;
+    const q = r.interpretations[0].quantity;
+    expect(q.dim).toBe(dim);
+    expect(q.value).toBeCloseTo(value, 6);
+  });
+  it('poznámka ukazuje, jak bylo číslo přečteno', () => {
+    const r = parse('deset milionů korun');
+    expect(r.ok && r.interpretations[0].notes).toContain('Číslo slovy: „deset milionů“ = 10\u00a0000\u00a0000.');
+  });
+  it('slovo, které není číslo, číslo neudělá', () => {
+    expect(parse('hodně korun').ok).toBe(false);
+    expect(parse('a korun').ok).toBe(false);
   });
 });

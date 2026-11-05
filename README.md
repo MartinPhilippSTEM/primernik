@@ -1,6 +1,6 @@
 # Příměrník
 
-Interní nástroj STEM, Ústavu empirických výzkumů. Do pole zadáte číslo s jednotkou (např. `5 mld. Kč`, `3 MW`, `200 tisíc domácností`) a dostanete několik **přesných a dohledatelných přirovnání** pro prezentaci nebo projev, například:
+Interní nástroj STEM, Ústavu empirických výzkumů. Do pole zadáte číslo s jednotkou číslicemi i slovy, s diakritikou i bez ní (např. `5 mld. Kč`, `3 MW`, `200 tisíc domácností`, `deset milionů korun`, `půl miliardy eur`, `pětadvacet megawattů`). Když jednotka chybí, počítá se s korunami a další výklady (lidé, domácnosti, kWh, tuny) jsou na výběr. Výsledkem je několik **přesných a dohledatelných přirovnání** pro prezentaci nebo projev, například:
 
 > 5 mld. Kč ≈ 0,69 % výdajů na důchody 2026
 > 5 mld. Kč: stát tolik vydá ze státního rozpočtu za ≈ 18 hodin

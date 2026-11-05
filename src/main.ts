@@ -200,7 +200,7 @@ function update(): void {
         h(
           'button',
           { type: 'button', class: 'chip', 'aria-pressed': String(i === pick), onclick: () => ((state.pick = i), update()) },
-          `${it.explain} (${it.notes[0]?.replace('Čtení čísla: ', '').replace(/\.$/, '') ?? ''})`,
+          it.choice ? `${it.explain} (${it.choice})` : it.explain,
         ),
       ),
     );
@@ -222,7 +222,7 @@ function update(): void {
     cpiNote.textContent = `Index spotřebitelských cen: ${catalog.cpi.source_name}. Ceny novější než ${catalog.cpiYear} se nepřepočítávají.`;
   }
 
-  const suggestions = compare(q, state.q.trim(), catalog.refs, {
+  const suggestions = compare(q, inputLabel(), catalog.refs, {
     power: q.dim === 'power' ? pa : null,
     cpi: state.cpi ? catalog.cpi : null,
     cpiYear: catalog.cpiYear,
@@ -256,12 +256,17 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+/** Vstup tak, jak se píše ve větách: zadaný text, nebo s doplněnou jednotkou („10 mil. Kč“). */
+function inputLabel(): string {
+  return current?.display ?? state.q.trim();
+}
+
 function citation(r: Ref): HTMLElement {
   return h('a', { href: r.source_url, target: '_blank', rel: 'noopener' }, `${r.source_name}, ${r.year}`);
 }
 
 function card(s: Ranked, n: number): HTMLLIElement {
-  const text = copyText(state.q.trim(), s);
+  const text = copyText(inputLabel(), s);
   const copyBtn = h('button', { type: 'button', class: 'copy' }, 'Kopírovat') as HTMLButtonElement;
   copyBtn.addEventListener('click', async () => {
     await copy(text);
@@ -275,7 +280,7 @@ function card(s: Ranked, n: number): HTMLLIElement {
     'li',
     { class: 'card' },
     h('p', { class: 'type' }, `${n}. ${TYPE_LABELS[s.type]} · ${CATEGORY_LABELS[s.category]}`),
-    h('p', { class: 'sentence', tabindex: '-1' }, h('span', { class: 'input num' }, state.q.trim()), ' ', capitalize(s.sentence)),
+    h('p', { class: 'sentence', tabindex: '-1' }, h('span', { class: 'input num' }, inputLabel()), ' ', capitalize(s.sentence)),
     h('p', { class: 'source' }, 'Zdroj: ', ...s.refs.flatMap((r, i) => [i ? '; ' : '', citation(r)])),
     h(
       'div',

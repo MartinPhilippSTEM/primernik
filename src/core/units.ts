@@ -95,6 +95,7 @@ export const UNITS: Record<string, UnitDef> = {
   ...massLike('co2e', 'CO2e'),
   // plocha
   m2: { dim: 'area', factor: 1 },
+  a: { dim: 'area', factor: 100 }, // ar
   ha: { dim: 'area', factor: 1e4 },
   km2: { dim: 'area', factor: 1e6 },
   // délka
@@ -103,6 +104,7 @@ export const UNITS: Record<string, UnitDef> = {
   m: { dim: 'length', factor: 1 },
   km: { dim: 'length', factor: 1e3 },
   // objem
+  ml: { dim: 'volume', factor: 1e-6 },
   l: { dim: 'volume', factor: 1e-3 },
   hl: { dim: 'volume', factor: 0.1 },
   m3: { dim: 'volume', factor: 1 },
